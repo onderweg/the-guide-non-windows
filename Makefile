@@ -13,6 +13,8 @@ SRC_UTIL=$(wildcard gdeutil/*.c)
 DIR_BUILD=build
 DIR_INC=include
 
+# to compile for debug: make DEBUG=1
+# to compile for no debug: make
 ifeq ($(DEBUG),1)
     DIR_BUILD = build/debug
     CFLAGS += -g -O0

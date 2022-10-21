@@ -9,14 +9,17 @@
 
 int main(int argc, char *argv[])
 {
+    setlocale(LC_ALL, ""); // needed to use unicode characters
+
     wchar_t *filename = L"test.gde";
 
     // Create new empty Guide file
     struct guide_t *guide = guide_create();
 
-    // Creat root node
+    // Create root node
     struct tree_node_t *root = tree_get_root(guide->tree);
     struct guide_nodedata_t *data = (struct guide_nodedata_t *)tree_get_data(root);
+
     guide_nodedata_set_title(data, L"The Beginning 🐣");    
     guide_nodedata_set_text(data, "Text of the root node");
 

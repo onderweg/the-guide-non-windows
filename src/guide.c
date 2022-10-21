@@ -271,7 +271,7 @@ static unsigned char *convert_to_utf8(const wchar_t *s)
 	  wcstombs with NULL as the destination will return the 
 	  number of bytes that would have been required. */
 	r = wcstombs(NULL, s, 0);	
-	if (r == 0) /* some error occured */
+	if (r <= 0) /* some error occured */
 	{
 		return NULL;
 	}	
@@ -324,6 +324,9 @@ static wchar_t *convert_to_unicode_from_utf8(const char *s, size_t len)
 static int _guide_write_node_title(struct guide_nodedata_t *data, FILE *fp)
 {
 	char *utf8 = (char*)convert_to_utf8(data->title);
+	if (utf8 == NULL) { /* utf8 conversion error */
+		utf8 = "<utf8 error>";
+	}
 	uint32 len = (uint32) strlen(utf8);
 
 	fwrite(&len, 1, sizeof(len), fp);
@@ -341,6 +344,7 @@ static int _guide_write_node_text(struct guide_nodedata_t *data, FILE *fp)
 
 static int _guide_storer_fn(struct tree_node_t *node, void *cargo)
 {
+	int ret;
 	struct tree_node_t *parent = tree_get_parent(node);
 	struct guide_nodedata_t *data = 
 		(struct guide_nodedata_t *)tree_get_data(node);
@@ -364,7 +368,10 @@ static int _guide_storer_fn(struct tree_node_t *node, void *cargo)
 	// node_attrs
 	_guide_write_node_attrs(data, fp);
 	// title
-	_guide_write_node_title(data, fp); /* TODO: check ret val */
+	ret = _guide_write_node_title(data, fp);
+	if (ret < 0) {
+
+	}
 	// text
 	_guide_write_node_text(data, fp); /* TODO: check ret val */
 

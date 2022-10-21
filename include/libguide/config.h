@@ -1,4 +1,7 @@
-/* Copyright 2005-08 Mahadevan R
+/* 
+ * libguide fork by github.com/onderweg, version 2022
+ *
+ * Original code: Copyright 2005-08 Mahadevan R
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

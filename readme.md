@@ -34,11 +34,11 @@ This is a fork of `libguide` and `gdeutil` from the original 2.0 sources.
 With the library you can load, manipulate and write The Guide V2 files.
 - `gdeutil` is a command line utility that can convert `gde` files to XML.
 
-While written in C, the orignal `libguide` and `gdeutil` use several Windows specific APIs, and therefore do not compile on non-Windows systems.
+While written in C, the orignal `libguide` and `gdeutil` use several Windows specific APIs, and therefore **do not** compile on non-Windows systems.
 
-The code in this fork is modified so that is **does** work on atleast macOS (tested) and possibly other Posix compatible systems (not tested).
+The code in this fork is modified so that is **does** work on at least macOS (tested) and possibly other Posix compatible systems (not tested).
 
-Most notable changes from the original `libguide`:
+Most notable changes from the original source:
 
 - Use `mmap` instead of `CreateFileMapping`/`MapViewOfFile` for memory mapped files.
 - Use Posix unicode functions like `mbsrtowcs`, instead of Windows specific ones, like `MultiByteToWideChar`.
@@ -74,8 +74,10 @@ It has been mainly tried out with some old `.gde` files I still had. Your mileag
 
 Specific issues worth mentioning:
 
-- When loading a file with `guide_load()`, you need to manually provide (as an argument) the architecture on which the file was created. This is error prone. TODO: find a way to determine architecture automatically.
-- Currently, `gdeutil` is hardcoded to work only with 32-bit `gde` files. TODO: add switch to make this dynamic.
+- When loading a file with `guide_load()`, you need to manually provide (as an argument) the architecture on which the file was created. This is error prone. 
+    - [] TODO: find a way to determine architecture automatically.
+- Currently, `gdeutil` is hardcoded to work only with 32-bit `gde` files. 
+    - [] TODO: add switch to make this dynamic.
 - Unicode handling (`convert_to_utf8`, `convert_to_unicode_from_usercp`) not well tested, and probably does not handle all use cases wel.
 
 ## Fine print

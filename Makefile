@@ -23,12 +23,7 @@ ifeq ($(DEBUG),1)
 endif
 
 LFLAGS_TEST=-L$(PWD)/$(DIR_BUILD)
-
-# on non-mac, use `-Wl,-rpath` to set runtime library path 
-# for test binaries
-ifneq ($(shell uname -s),Darwin)
-    LFLAGS_TEST +=-Wl,-rpath=$(PWD)/$(DIR_BUILD)
-endif
+LFLAGS_TEST +=-Wl,-rpath "$(PWD)/$(DIR_BUILD)"
 
 DIR_BUILD_TEST=$(DIR_BUILD)/test
 DIR_BUILD_UTIL=$(DIR_BUILD)/gdeutil

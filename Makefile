@@ -13,6 +13,8 @@ SRC_UTIL=$(wildcard gdeutil/*.c)
 DIR_BUILD=build
 DIR_INC=include
 
+PWD = $(shell pwd)
+
 # to compile for debug: make DEBUG=1
 # to compile for no debug: make
 ifeq ($(DEBUG),1)
@@ -20,12 +22,12 @@ ifeq ($(DEBUG),1)
     CFLAGS += -g -O0
 endif
 
-LFLAGS_TEST=-L./$(DIR_BUILD)
+LFLAGS_TEST=-L$(PWD)/$(DIR_BUILD)
 
 # on non-mac, use `-Wl,-rpath` to set runtime library path 
 # for test binaries
 ifneq ($(shell uname -s),Darwin)
-    LFLAGS_TEST +=-Wl,-rpath=./$(DIR_BUILD)
+    LFLAGS_TEST +=-Wl,-rpath=$(PWD)/$(DIR_BUILD)
 endif
 
 DIR_BUILD_TEST=$(DIR_BUILD)/test

@@ -20,6 +20,14 @@ ifeq ($(DEBUG),1)
     CFLAGS += -g -O0
 endif
 
+LFLAGS_TEST=-L./$(DIR_BUILD)
+
+# on non-mac, use `-Wl,-rpath` to set runtime library path 
+# for test binaries
+ifneq ($(shell uname -s),Darwin)
+    LFLAGS_TEST +=-Wl,-rpath=./$(DIR_BUILD)
+endif
+
 DIR_BUILD_TEST=$(DIR_BUILD)/test
 DIR_BUILD_UTIL=$(DIR_BUILD)/gdeutil
 
@@ -37,8 +45,8 @@ gdeutil: libguide $(SRC_UTIL)
 
 test: libguide $(wildcard test/*.c)
 	@mkdir -p $(DIR_BUILD_TEST)
-	$(CC) -o $(DIR_BUILD_TEST)/read test/read.c -lguide -L$(DIR_BUILD) -I$(DIR_INC) $(CFLAGS) $(WFLAGS_TEST)
-	$(CC) -o $(DIR_BUILD_TEST)/write test/write.c -lguide -L$(DIR_BUILD) -I$(DIR_INC) $(CFLAGS) $(WFLAGS_TEST)
+	$(CC) -o $(DIR_BUILD_TEST)/read test/read.c -lguide $(LFLAGS_TEST) -I$(DIR_INC) $(CFLAGS) $(WFLAGS_TEST)
+	$(CC) -o $(DIR_BUILD_TEST)/write test/write.c -lguide $(LFLAGS_TEST) -I$(DIR_INC) $(CFLAGS) $(WFLAGS_TEST)
 .PHONY: test
 
 clean:

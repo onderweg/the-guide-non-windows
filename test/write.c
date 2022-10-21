@@ -36,5 +36,10 @@ int main(int argc, char *argv[])
     guide_add_child(guide, root, child2, NULL);
 
     // Save to file
-    guide_store(filename, guide);
+    int ret = guide_store(filename, guide);
+    if (ret != 0) {
+        printf("Failed\n");
+        exit(EXIT_FAILURE);
+    }
+    printf("Done => %ls\n", filename);
 }

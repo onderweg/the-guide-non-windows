@@ -1,6 +1,6 @@
 # Non-Windows The Guide library
 
-This is a fork of the orignal Windows-only `libguide`, part of the awesome [The Guide](https://theguide.sourceforge.net/index.html) hierarchical note application.
+This is a fork of the orignal Windows-only `libguide` and `gdeutil` source code, part of the awesome [The Guide](https://theguide.sourceforge.net/index.html) hierarchical note application, that works on non-Windows systems.
 
 ## 📘 About The Guide
 
@@ -34,9 +34,9 @@ This is a fork of `libguide` and `gdeutil` from the original 2.0 sources.
 With the library you can load, manipulate and write The Guide V2 files.
 - `gdeutil` is a command line utility that can convert `gde` files to XML.
 
-While written in C, the orignal `libguide` and `gdeutil` use several Windows specific APIs, and therefore does not compile on non-Windows systems.
-The code in this fork is modified to work on macOS and possibly other Posix compatible systems (not tested).
+While written in C, the orignal `libguide` and `gdeutil` use several Windows specific APIs, and therefore do not compile on non-Windows systems.
 
+The code in this fork is modified so that is **does** work on atleast macOS (tested) and possibly other Posix compatible systems (not tested).
 
 Most notable changes from the original `libguide`:
 
@@ -55,6 +55,10 @@ Debug build:
 
     $  make DEBUG=1
     
+### Dependencies
+
+There are no dependencies, other than the C standard library.
+
 ## Using
 
 The original library is not documented, but the code is pretty readable.

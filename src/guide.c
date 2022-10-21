@@ -161,7 +161,7 @@ struct _guide_mappedfile_t
 static struct _guide_mappedfile_t *_guide_map_file(const wchar_t *filename, unsigned *os_errcode)
 {
 	struct _guide_mappedfile_t *m = (struct _guide_mappedfile_t *)
-										malloc(sizeof(struct _guide_mappedfile_t));
+			malloc(sizeof(struct _guide_mappedfile_t));
 	assert(m);
 	*os_errcode = 1;
 	if (!m) return m;
@@ -178,7 +178,7 @@ static struct _guide_mappedfile_t *_guide_map_file(const wchar_t *filename, unsi
 	}	
 	free(utf8_filename);
 
-	/* get of mapping (= file size) */
+	/* get size of mapping (= file size) */
 	struct stat st;	
 	fstat(m->h_file, &st);
 	m->size = (unsigned)(st.st_size);

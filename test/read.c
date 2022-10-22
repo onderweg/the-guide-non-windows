@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
     unsigned os_errcode;
     struct guide_t *guide;
     uint32 format;
-    guide = guide_load(filename, &os_errcode, &format, ARCH32);
+    guide = guide_load(filename, &os_errcode, &format, ARCH64);
     if (guide == NULL)
     {
         printf("Failed to load tree: %s\n", strerror(os_errcode));

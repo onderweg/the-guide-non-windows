@@ -1,0 +1,85 @@
+meta:
+  id: gde32
+  title: The Guide (32 bits)  
+  endian: le
+  file-extension: gde
+seq:
+  - id: header
+    type: header
+  - id: root_node
+    type: node     
+  - id: nodes
+    type: node
+    repeat: eos
+enums:
+  file_attr_type:
+    1: counter
+    2: sel_node
+  node_attr_type:
+    1: state
+    2: icon
+    3: first_line
+    4: color
+    5: bgcolor
+    6: uid
+    7: tc_state
+types:
+  header:
+    seq:
+      - id: magic
+        contents: [GDE]
+      - id: version
+        type: u4
+      - id: attr_count
+        type: u4
+      - id: file_attrs
+        type: file_attrs
+        repeat: expr
+        repeat-expr: attr_count
+  file_attrs:
+    seq:
+      - id: attr_id
+        type: u4
+        enum: file_attr_type
+      - id: attr_val_len
+        type: u4
+      - id: attr_val
+        size: attr_val_len
+        type:
+          switch-on: attr_id
+          cases:
+            'file_attr_type::counter' : u4
+            'file_attr_type::sel_node': u4
+  node:
+    seq:
+      - id: node_id
+        type: u4
+      - id: parent_node_id
+        type: u4
+      - id: node_attr_count
+        type: u4
+      - id: node_attrs
+        type: node_attr
+        repeat: expr
+        repeat-expr: node_attr_count
+      - id: node_title_len
+        type: u4
+      - id: node_title
+        type: str
+        size: node_title_len
+        encoding: UTF-8
+      - id: node_text_len
+        type: u4
+      - id: node_text
+        type: str
+        size: node_text_len
+        encoding: UTF-8          
+  node_attr:
+    seq:
+      - id: attr_id
+        type: u4
+        enum: node_attr_type
+      - id: attr_val_len
+        type: u4
+      - id: attr_val
+        size: attr_val_len

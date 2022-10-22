@@ -77,7 +77,7 @@ Katai Struct is a really cool project (go check it out!) to generate parsers for
 
 >The main idea is that a particular format is described in Kaitai Struct language (.ksy file) and then can be compiled with ksc into source files in one of the supported programming languages. These modules will include a generated code for a parser that can read the described data structure from a file or stream and give access to it in a nice, easy-to-comprehend API.
 
-So, with the provided `.kty` files (in YAML format), you can generete The Guide parsers for several languages, such as Go, Java, Python, etc.
+So, with the provided `.kty` files (in YAML format), you can generate The Guide parsers for several languages, such as Go, Java, Python, etc.
 
 ## Known issues/todo
 

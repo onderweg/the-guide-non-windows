@@ -101,14 +101,6 @@ LIBGUIDEAPI void guide_nodedata_set_textn(struct guide_nodedata_t *data, const c
 /*-----------------------------------------------------------------------------------------------*/
 
 /**
- * Defines pointer size of architecture used to create gde file
- */
-typedef enum {
-  ARCH32,
-  ARCH64,  
-} arch_bits_t ; 
-
-/**
  * The guide data structure. From v2.0, the guide is no longer just a plain
  * tree, but has some more properties. The tree itself, with it's nodes having
  * data as pointers to heap-allocated guide_nodedata_t structures, is contained
@@ -130,8 +122,6 @@ struct guide_t
 	 * to the new pointer upon load.
 	 */
 	struct tree_node_t *sel_node;
-
-	arch_bits_t arch_bits;
 };
 
 /* operations on the guide itself */
@@ -140,7 +130,7 @@ struct guide_t
 LIBGUIDEAPI struct guide_t *guide_create();
 /** Load a guide from a file. */
 LIBGUIDEAPI struct guide_t *guide_load(const wchar_t *filename, unsigned *os_errcode,
-	uint32 *format, arch_bits_t arch_bits);
+	uint32 *format);
 /** Store guide into disk. */
 LIBGUIDEAPI int guide_store(const wchar_t *filename, struct guide_t *gde);
 /** Destroy the guide object. Do not use the pointer after this call. */

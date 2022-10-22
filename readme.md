@@ -44,7 +44,7 @@ Most notable changes from the original source:
 - Use Posix unicode functions like `mbsrtowcs`, instead of Windows specific ones, like `MultiByteToWideChar`.
 - Removed `wintree.c`, `wintree.h`. These are specific for Windows TreeView components, and hence not usable on non-Windows systems.
 - Use Makefile instead of Visual Studio project.
-- Applied fix to read `.gde` files on different architecture than it was created.
+- Applied fixes to read `.gde` files on different architecture than it was created.
 - Removed support for v1 gde files; this fork only supports v2.
 
 ## Building
@@ -79,6 +79,8 @@ Katai Struct is a really cool project (go check it out!) to generate parsers for
 
 So, with the provided `.kty` files (in YAML format), you can generate The Guide parsers for several languages, such as Go, Java, Python, etc.
 
+For convenience, `.kty` files are provided for both 32bit and 64bit `libguide` versions. In practice most files a probably created with the 32bit version, so you would not need the latter.
+
 ## Known issues/todo
 
 In general: this library is not well tested. 
@@ -87,8 +89,9 @@ It has been mainly tried out with some old `.gde` files I still had. Your mileag
 
 Specific issues worth mentioning:
 
-- When loading a file with `guide_load()`, you need to manually provide (as an argument) the architecture on which the file was created. This is error prone. 
-    - [] TODO: find a way to determine architecture automatically.
+- Unfortunately in the original code, `gde` output is architecture specific. That means a 32 bit version would
+create different files than a 64 bit version of The Guide. That is because the byte size of certain values (node id's) written/read from disk, depend on the pointer size the machine it is running on. However, as far as I know, only 32bit version of The Guide 2.0 exist. Therefore this fork, also when running on a 64 bit machine, always asumes 32bit The Guide files.
+    - [] TODO: Check several scenarios of reading/writing on multiple architectures.
 - Currently, `gdeutil` is hardcoded to work only with 32-bit `gde` files. 
     - [] TODO: add switch to make this dynamic.
 - Unicode handling (`convert_to_utf8`, `convert_to_unicode_from_usercp`) not well tested, and probably does not handle all use cases wel.

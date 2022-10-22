@@ -354,17 +354,21 @@ static int _guide_storer_fn(struct tree_node_t *node, void *cargo)
 	assert(data);
 	assert(fp);
 
-// <node_id> <parent_node_id> <node_attrs> <title_len> <title> <text_len> <text>
-// attrs := <n_attrs> [ <attr_id> <attr_val_len> <attr_val> ]{n_attrs}
+	// <node_id> <parent_node_id> <node_attrs> <title_len> <title> <text_len> <text>
+	// attrs := <n_attrs> [ <attr_id> <attr_val_len> <attr_val> ]{n_attrs}
 
-	// node_id
+	// Note (gerwert):
+	// Because pointer values are used as node IDs (why!?), 
+	// reading a file causes issues between different architectures, with diffrent pointer sizes.
+	// For example reading file created on win32 on a arm64 Mac.
 	//
-	// note (gerwert): because pointers are used as IDs, 
-	// reading file causes issues between different architectures
-	fwrite(&node,       1, sizeof(node),   		  fp);
+	// Fix: changed original code to always write 4 byte values (uint32).
+	// @TODO: check if this always yields unique ids on 64 bits systems
 
+	fwrite(&node, 1, sizeof(uint32), fp);
 	// parent_node_id
-	fwrite(&parent,     1, sizeof(parent), 		  fp);
+	fwrite(&parent, 1, sizeof(uint32), fp);
+
 	// node_attrs
 	_guide_write_node_attrs(data, fp);
 	// title
@@ -497,7 +501,7 @@ static char *_guide_read_header(struct guide_t *guide, char *begin)
 		else if (attr_id == 2) {
 			//uint32 ptr_value = *(uint32 *)begin;
 			//guide->sel_node = (struct tree_node_t *)ptr_value;
-			guide->sel_node = *(struct tree_node_t **)begin;
+			guide->sel_node = *(uint32 *)begin;
 		}
 
 		/* move onto the next attr start */
@@ -528,24 +532,24 @@ static struct guide_nodedata_t *_guide_read_node_v2(char **pp,
 
 	p = *pp;
 
-	if (guide->arch_bits == ARCH32) {
-		// Fix: for reading gde files stored by 32 bits Windows version on a 64 bit machine:
-		// Because of different pointer sizes (4 bytes on win32, 8 bytes on 64bit machines), 
-		// the original code reads to many bytes.
+	// Fix: for reading gde files stored by 32 bits Windows version on a 64 bit machine:
+	// Because of different pointer sizes (4 bytes on win32, 8 bytes on 64bit machines), 
+	// the original code reads to many bytes.
+
+	uint32 p1 = *(uint32 *)p; p+= 4; 
+	uint32 p2 = *(uint32 *)p; p+= 4;
 	
-		uint32 p1 = *(uint32 *)p; p+= 4; 
-		uint32 p2 = *(uint32 *)p; p+= 4;
-		
-		// "fake pointer" here means: store a number in a pointer variable; 
-		// altough pointer syntax is used, it does not really point to anyting.		
-		*fake_node_ptr = p1;
-		*fake_parent_ptr = p2;
-	} else {
-		// Original code, works only when file is read on same architecture as file was written on?
-		*fake_node_ptr   =  ((struct tree_node_t **)p)[0]; 
-		*fake_parent_ptr = ((struct tree_node_t **)p)[1];
-		p += 2 * sizeof(struct tree_node_t *);
-	}
+	// "fake pointer" here means: store a number in a pointer variable; 
+	// altough pointer syntax is used, it does not really point to anyting.		
+	*fake_node_ptr = p1;
+	*fake_parent_ptr = p2;
+
+	// Original code, for reference:	
+	/*
+	*fake_node_ptr   =  ((struct tree_node_t **)p)[0]; 
+	*fake_parent_ptr = ((struct tree_node_t **)p)[1];
+	p += 2 * sizeof(struct tree_node_t *);
+	*/
 
 	/* create a blank node data object */
 	node_data = guide_nodedata_create(guide);
@@ -604,7 +608,7 @@ static struct guide_nodedata_t *_guide_read_node_v2(char **pp,
 	return node_data;
 }
 
-static struct guide_t *guide_load_v2(struct _guide_mappedfile_t *m, unsigned len, arch_bits_t arch_bits, unsigned *os_errcode)
+static struct guide_t *guide_load_v2(struct _guide_mappedfile_t *m, unsigned len, unsigned *os_errcode)
 {
 	char *begin, *end, *p;
 	struct guide_t *guide;
@@ -623,7 +627,6 @@ static struct guide_t *guide_load_v2(struct _guide_mappedfile_t *m, unsigned len
 	if (!guide)
 		return NULL;
 
-	guide->arch_bits = arch_bits;
 	guide->_counter = 0; /* filled in by _guide_read_header */
 	guide->_uidtbl = lut_create();
 	guide->sel_node = 0; /* filled in by _guide_read_header */
@@ -694,14 +697,8 @@ static struct guide_t *guide_load_v2(struct _guide_mappedfile_t *m, unsigned len
 
 /* Loads a .gde file, of any file format. It detects the file format
  * and then behaves appropriately. 
- *
- * You need to provide the architecture (32 or 64) of the machine on which the gde file
- * to load was created. That is because gde file format has architecture specific quirks.
- * Note: this assumes the architecture of the machine loading is always 64 bits.
- * 
- * @TODO: auto detection of file architecture
  */
-struct guide_t *guide_load(const wchar_t *filename, unsigned *os_errcode, uint32 *format, arch_bits_t arch_bits)
+struct guide_t *guide_load(const wchar_t *filename, unsigned *os_errcode, uint32 *format)
 {
 	unsigned len;
 	struct _guide_mappedfile_t *m;
@@ -733,7 +730,7 @@ struct guide_t *guide_load(const wchar_t *filename, unsigned *os_errcode, uint32
 	if (memcmp((char *)(m->data), "GDE\x02\0\0\0", 7) == 0)
 	{		
 		*format = 2;
-		gde = guide_load_v2(m, len, arch_bits, os_errcode);	
+		gde = guide_load_v2(m, len, os_errcode);	
 	}
 	/* not a .gde file */
 	else

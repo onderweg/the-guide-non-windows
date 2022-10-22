@@ -188,7 +188,7 @@ void export_xml(const char *filename)
 
 	/* load it */
 	uni_filename = convert_to_unicode_from_usercp(filename);
-	guide = guide_load(uni_filename, &err, &format, ARCH32); // @TODO: provide switch for arch?
+	guide = guide_load(uni_filename, &err, &format);
 	if (opt_verbose)
 		printf("%s: loaded at %p, error=%lu, format=%lu\n", filename, guide, err, format);
 	if (!guide)

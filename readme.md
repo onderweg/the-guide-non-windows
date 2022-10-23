@@ -79,6 +79,16 @@ Katai Struct is a really cool project (go check it out!) to generate parsers for
 
 So, with the provided `.kty` files (in YAML format), you can generate The Guide parsers for several languages, such as Go, Java, Python, etc.
 
+You can aslo use Katai to create a JSON or XML export:
+
+```bash
+$ gem install kaitai-struct-visualizer
+# JSON output
+$ ksdump -f json guide.gde gde32.kty
+# XML output
+$ ksdump -f xml guide.gde gde32.kty
+```
+
 For convenience, `.kty` files are provided for both 32bit and 64bit `libguide` versions. In practice most files a probably created with the 32bit version, so you would not need the latter.
 
 ## Known issues/todo

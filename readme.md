@@ -68,18 +68,18 @@ There is also a `test` directory, with some example code.
 
 ## Extras
 
-### Katai Struct format description
+### kaitai Struct format description
 
-In `extra/katai` you'll find [Katai](https://kaitai.io/) format description file for the 32bit and 64bit versions
+In `extra/kaitai` you'll find [Kaitai](https://kaitai.io/) format description file for the 32bit and 64bit versions
 of Gde files.
 
-Katai Struct is a really cool project (go check it out!) to generate parsers for binary formats:
+kaitai Struct is a really cool project (go check it out!) to generate parsers for binary formats:
 
 >The main idea is that a particular format is described in Kaitai Struct language (.ksy file) and then can be compiled with ksc into source files in one of the supported programming languages. These modules will include a generated code for a parser that can read the described data structure from a file or stream and give access to it in a nice, easy-to-comprehend API.
 
 So, with the provided `.kty` files (in YAML format), you can generate The Guide parsers for several languages, such as Go, Java, Python, etc.
 
-You can aslo use Katai to create a JSON or XML export:
+You can aslo use Kaitai Struct to create a JSON or XML export:
 
 ```bash
 $ gem install kaitai-struct-visualizer
@@ -110,6 +110,8 @@ create different files than a 64 bit version of The Guide. That is because the b
 
 This code is provided "as is" without warranty or support of any kind.
 Use this library as reference, to play around with, etc., but not for anything serious.
+
+It may eat your laundry (notes). It shouldn't, but it might.[¹](https://github.com/blofroth/taskigt)
 
 ## QA
 
